@@ -1,9 +1,8 @@
 import datetime
+from flask import Flask
 import os
-from .website import Website
 
-
-website = Website()
+app = Flask(__name__)
 
 USERS = '''<html>
     <head>
@@ -40,9 +39,11 @@ def get_user_thoughts(user, user_dir):
     for date in dates:
         with open(f'{user_dir}/{date}', 'r') as thought_file:
             raw_thought = thought_file.read()
-            datetime_obj = datetime.datetime.strptime(date, '%Y-%m-%d_%H-%M-%S.txt')
+            datetime_obj = datetime.datetime.strptime(date,
+                                                      '%Y-%m-%d_%H-%M-%S.txt')
             date_as_string = str(datetime_obj)
-            user_thoughts_list.append(THOUGHT.format(date=date_as_string, thought=raw_thought))
+            user_thoughts_list.append(THOUGHT.format(date=date_as_string,
+                                                     thought=raw_thought))
     return user_thoughts_list
 
 
@@ -56,40 +57,23 @@ def get_users(data_dir):
 
 
 def register_thoughts_views(data_dir):
-    @website.route('/')
+    @app.route('/')
     def users():
         users_list = get_users(data_dir)
-        return 200, USERS.format(users=''.join(users_list))
+        return USERS.format(users=''.join(users_list)), 200
 
-    @website.route('/users/([0-9]+)')
+    @app.route('/users/<int:user_id>')
     def user(user_id):
         user_dir = f'{data_dir}/{user_id}'
         if not os.path.exists(user_dir):
-            return 404, ''
+            return '', 404
         user_thoughts_list = get_user_thoughts(user_id, user_dir)
-        user_thoughts_html = THOUGHTS.format(thoughts=''.join(user_thoughts_list), user_id=user_id)
-        return 200, user_thoughts_html
+        user_thoughts_html = THOUGHTS.format(thoughts=''.join(
+            user_thoughts_list),
+            user_id=user_id)
+        return user_thoughts_html, 200
 
 
 def run_webserver(address, data_dir):
     register_thoughts_views(data_dir)
-    website.run(address)
-
-def main(argv):
-    if len(argv) != 3:
-        print(f'USAGE: {argv[0]} <address> <data_dir>')
-        return 1
-    try:
-        ip, port = argv[1].split(':')
-        register_thoughts_views(argv[2])
-        website.run((ip, int(port)))
-    except KeyboardInterrupt:
-        pass
-    except Exception as error:
-        print(f'ERROR: {error}')
-        return 1
-
-
-if __name__ == '__main__':
-    import sys
-    sys.exit(main(sys.argv))
+    app.run(*address)

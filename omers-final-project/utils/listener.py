@@ -1,6 +1,6 @@
 import socket
 
-from connection import Connection
+from .connection import Connection
 
 
 class Listener:
@@ -38,7 +38,3 @@ class Listener:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
-
-# import time
-# with Listener(8000) as listener:
-#     time.sleep(10)

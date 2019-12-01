@@ -8,7 +8,8 @@ class Connection:
     def __repr__(self):
         local_ip, local_port = self.socket.getsockname()
         peer_ip, peer_port = self.socket.getpeername()
-        return f'<Connection from {local_ip}:{local_port} to {peer_ip}:{peer_port}>'
+        return f'<Connection from {local_ip}:{local_port}' \
+               f' to {peer_ip}:{peer_port}>'
 
     def send(self, data):
         self.socket.sendall(data)

@@ -25,25 +25,18 @@ class Thought:
             return False
 
         return self.user_id == other.user_id and \
-               self.timestamp == other.timestamp and \
-               self.thought == other.thought
+            self.timestamp == other.timestamp and self.thought == other.thought
 
     def serialize(self):
         print(self.user_id, self.timestamp, self.thought)
         return struct.pack(f'{FORMAT}{len(self.thought)}s',
-                    int(self.user_id),
-                    int(self.timestamp),
-                    len(self.thought),
-                    bytes(self.thought, 'ASCII'))
+                           int(self.user_id), int(self.timestamp),
+                           len(self.thought), bytes(self.thought, 'ASCII'))
 
     @staticmethod
     def deserialize(data):
-        user_id, timestamp, thought_size = struct.unpack(FORMAT, data[0:PACK_SIZE])
+        user_id, timestamp, thought_size = struct.unpack(FORMAT,
+                                                         data[0:PACK_SIZE])
         thought_list = struct.unpack(f'{thought_size}s', data[PACK_SIZE:])
         thought = thought_list[0].decode('ASCII')
         return Thought(user_id=user_id, timestamp=timestamp, thought=thought)
-
-
-
-
-

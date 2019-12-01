@@ -1,5 +1,7 @@
 import click
-from . import run_server, upload_thought, run_webserver
+from .server import run_server
+from .client import upload_thought
+from .web import run_webserver
 
 
 @click.group()

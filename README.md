@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/omers4/omers-final-project.svg?branch=master)](https://travis-ci.org/omers4/omers-final-project)
+
 # omers-final-project
 
 ## Installation

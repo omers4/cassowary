@@ -1,6 +1,7 @@
 # omers-final-project
 
 [![Build Status](https://travis-ci.org/omers4/omers-final-project.svg?branch=master)](https://travis-ci.org/omers4/omers-final-project)
+[![codecov](https://codecov.io/gh/omers4/omers-final-project/branch/master/graph/badge.svg)](https://codecov.io/gh/omers4/omers-final-project)
 
 ## Installation
 

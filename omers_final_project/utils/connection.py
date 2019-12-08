@@ -1,4 +1,5 @@
 import socket
+import struct
 
 
 class Connection:
@@ -12,9 +13,10 @@ class Connection:
                f' to {peer_ip}:{peer_port}>'
 
     def send(self, data):
+        self.socket.sendall(struct.pack('I', len(data)))
         self.socket.sendall(data)
 
-    def receive(self, size):
+    def _receive_by_size(self, size):
         length_to_read = size
         data_chunks = []
         while True:
@@ -27,6 +29,11 @@ class Connection:
         if length_to_read > 0:
             raise Exception('Connection was interrupted')
         return data
+
+    def receive(self):
+        msg_len_bytes = self.socket.recv(4)
+        msg_len = struct.unpack('I', msg_len_bytes)[0]
+        return self._receive_by_size(msg_len)
 
     @classmethod
     def connect(cls, ip, port):

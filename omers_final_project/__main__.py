@@ -1,7 +1,8 @@
 import click
 from .server import run_server
-from .client import upload_thought
+from .client import upload_snapshot
 from .web import run_webserver
+from .reader import Reader
 
 
 @click.group()
@@ -25,14 +26,15 @@ def run(address, data):
 
 @cli.command()
 @click.argument('address')
-@click.argument('user')
-@click.argument('thought')
-def upload(address, user, thought):
+@click.argument('path')
+def upload(address, path):
     try:
-        upload_thought(address, user, thought)
+        with Reader(path) as reader:
+            upload_snapshot(address, reader)
         print('done')
     except Exception as error:
-        print(f'ERROR: {error}')
+        # print(f'ERROR: {error}')
+        raise
         return 1
 
 
@@ -48,6 +50,15 @@ def run_web_server(address, data):
     except Exception as error:
         print(f'ERROR: {error}')
         return 1
+
+
+@cli.command()
+@click.argument('path')
+def read(path):
+    with Reader(path) as reader:
+        print(reader)
+        for thought in reader.thoughts:
+            print(thought)
 
 
 if __name__ == '__main__':

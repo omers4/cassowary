@@ -4,7 +4,8 @@ import struct
 import threading
 
 from .utils.listener import Listener
-from .thought import Thought
+from .utils.connection import Connection
+from .utils.protocol import Hello, Config, Snapshot
 
 FORMAT = 'LLI'
 PACK_SIZE = struct.calcsize('LLI')
@@ -23,26 +24,30 @@ def save_user_data(thought_obj, data_dir):
         f.write(thought_obj.thought)
 
 
-lock = threading.Lock()
-
-
 class Handler(threading.Thread):
-    def __init__(self, connection, data_dir):
+    lock = threading.Lock()
+
+    def __init__(self, connection: Connection, data_dir: str):
         super(Handler, self).__init__()
         self.connection = connection
         self.data_dir = data_dir
 
     def run(self):
         with self.connection as connection:
-            metadata = connection.receive(PACK_SIZE)
-            _, _, thought_size = struct.unpack(FORMAT, metadata)
-            raw_thought = connection.receive(thought_size)
-        thought_obj = Thought.deserialize(metadata + raw_thought)
-        lock.acquire()
+            hello = Hello.deserialize(connection.receive())
+            print(hello)
+            config = Config([])
+            print(config)
+            connection.send(config.serialize())
+            snapshot = Snapshot.deserialize(connection.receive(), config.fields)
+            print(snapshot)
+        self.lock.acquire()
         try:
-            save_user_data(thought_obj, self.data_dir)
+            pass # TODO handle snapshot according to different parsers
+            # TODO handle different fields
+            # save_user_data(thought_obj, self.data_dir)
         finally:
-            lock.release()
+            self.lock.release()
 
 
 def run_server(address, data_dir):

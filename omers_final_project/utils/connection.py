@@ -1,3 +1,4 @@
+import io
 import socket
 import struct
 
@@ -33,7 +34,7 @@ class Connection:
     def receive(self):
         msg_len_bytes = self.socket.recv(4)
         msg_len = struct.unpack('I', msg_len_bytes)[0]
-        return self._receive_by_size(msg_len)
+        return io.BytesIO(self._receive_by_size(msg_len))
 
     @classmethod
     def connect(cls, ip, port):

@@ -39,7 +39,8 @@ class Reader:
             if timestamp is None:
                 raise StopIteration()
 
-            pixels = binary_from_file(self.cursor.file, f'{3*height*width}b')
+            # pixels = binary_from_file(self.cursor.file, f'{3*height*width}b')
+            pixels = self.cursor.file.read(3*height*width)
             depth_height, depth_width = binary_from_file(self.cursor.file, 'II')
             depth_pixels = binary_from_file(self.cursor.file, f'{depth_height*depth_width}f')
 

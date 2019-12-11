@@ -6,9 +6,13 @@ import threading
 from .utils.listener import Listener
 from .utils.connection import Connection
 from .utils.protocol import Hello, Config, Snapshot
+from .utils.parser import Parser
+
 
 FORMAT = 'LLI'
 PACK_SIZE = struct.calcsize('LLI')
+
+FIELDS = ['translation', 'color_image']
 
 
 def save_user_data(thought_obj, data_dir):
@@ -31,23 +35,24 @@ class Handler(threading.Thread):
         super(Handler, self).__init__()
         self.connection = connection
         self.data_dir = data_dir
+        self.parsers = {key: cls(data_dir) for key, cls in Parser.parsers.items() if key in FIELDS}
 
     def run(self):
         with self.connection as connection:
             hello = Hello.deserialize(connection.receive())
-            print(hello)
-            config = Config([])
+            config = Config(FIELDS)
             print(config)
             connection.send(config.serialize())
             snapshot = Snapshot.deserialize(connection.receive(), config.fields)
-            print(snapshot)
-        self.lock.acquire()
+        print('Hi2')
+        print(self.parsers)
+        Handler.lock.acquire()
         try:
-            pass # TODO handle snapshot according to different parsers
-            # TODO handle different fields
-            # save_user_data(thought_obj, self.data_dir)
+            for name, parser in self.parsers.items():
+                print(f'Im parsing {name}')
+                parser.parse(hello.user_id, snapshot)
         finally:
-            self.lock.release()
+            Handler.lock.release()
 
 
 def run_server(address, data_dir):

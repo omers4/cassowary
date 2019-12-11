@@ -1,6 +1,6 @@
 from .utils.connection import Connection
 from .reader import Reader
-from .utils.protocol import Hello, Config
+from .utils.protocol import Hello, Config, Snapshot
 
 
 def upload_snapshot(address: str, reader: Reader):
@@ -14,13 +14,13 @@ def upload_snapshot(address: str, reader: Reader):
     ip, port = address.split(':')
     for thought in reader.thoughts:
         with Connection.connect(ip, int(port)) as connection:
-            print(reader)
+            # print(reader)
             hello = Hello(reader.user_id, reader.user_name, reader.birth, reader.gender)
-            print(hello)
+            # print(hello.serialize())
+            import io
             connection.send(hello.serialize())
             config = Config.deserialize(connection.receive())
             print(config)
-            print(thought)
             connection.send(thought.serialize(config.fields))
         # given_thought = Thought(int(user), int(time.time()), thought)
         # connection.send(given_thought.serialize())

@@ -40,17 +40,14 @@ class Handler(threading.Thread):
     def run(self):
         with self.connection as connection:
             hello = Hello.deserialize(connection.receive())
+            print(hello)
             config = Config(FIELDS)
-            print(config)
             connection.send(config.serialize())
             snapshot = Snapshot.deserialize(connection.receive(), config.fields)
-        print('Hi2')
-        print(self.parsers)
         Handler.lock.acquire()
         try:
             for name, parser in self.parsers.items():
-                print(f'Im parsing {name}')
-                parser.parse(hello.user_id, snapshot)
+                parser.parse(hello.user.user_id, snapshot)
         finally:
             Handler.lock.release()
 

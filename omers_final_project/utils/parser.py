@@ -48,13 +48,5 @@ class ColorImageParser(Parser):
         path = f'{self.get_path(user_id, snapshot.timestamp)}/color_image.jpg'
         create_path_dirs(path)
 
-        image = Image.new('RGB', (width, height))
-
-        for i, pixel in enumerate(data):
-            data = (pixel[0], pixel[1], pixel[2])
-
-        print(data[0])
-
-        image.putdata(data)
+        image = Image.frombytes('RGB', (width, height), data)
         image.save(path)
-        print(f'saved image to {path}')

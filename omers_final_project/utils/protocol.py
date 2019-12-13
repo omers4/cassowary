@@ -1,9 +1,8 @@
 import struct
-import io
 from .binary_utils import binary_from_stream
 
 
-class Hello:
+class User:
     def __init__(self, user_id, user_name, birth, gender):
         self.user_id = user_id
         self.user_name = user_name
@@ -11,25 +10,36 @@ class Hello:
         self.gender = gender
 
     def __repr__(self):
-        return f'Hello(user_id={self.user_id}, ' \
+        return f'User(user_id={self.user_id}, ' \
                f'user_name="{self.user_name}", ' \
                f'birth={self.birth}, ' \
                f'gender={self.gender})'
 
+
+class Hello:
+    def __init__(self, user: User):
+        self.user = user
+
+    def __repr__(self):
+        return f'Hello(user_id={self.user.user_id}, ' \
+               f'user_name="{self.user.user_name}", ' \
+               f'birth={self.user.birth}, ' \
+               f'gender={self.user.gender})'
+
     def serialize(self):
-        return struct.pack(f'<QI{len(self.user_name)}sIc',
-                           self.user_id,
-                           len(self.user_name),
-                           bytes(self.user_name, 'ASCII'),
-                           self.birth,
-                           bytes(self.gender, 'ASCII'))
+        return struct.pack(f'<QI{len(self.user.user_name)}sIc',
+                           self.user.user_id,
+                           len(self.user.user_name),
+                           bytes(self.user.user_name, 'ASCII'),
+                           self.user.birth,
+                           bytes(self.user.gender, 'ASCII'))
 
     @staticmethod
     def deserialize(stream):
         user_id, user_name_length = binary_from_stream(stream, '<QI')
         user_name = binary_from_stream(stream, f'{user_name_length}s')[0]
         birth, gender = binary_from_stream(stream, '<Ic')
-        return Hello(user_id, user_name, birth, gender)
+        return Hello(User(user_id, user_name, birth, gender))
 
 
 class Config:
@@ -107,7 +117,7 @@ class Snapshot:
 
         pixels = None
         if 'color_image' in fields:
-            pixels = binary_from_stream(stream, f'3s'*height*width)
+            pixels = binary_from_stream(stream, f'{3*height*width}s')[0]
         depth_height, depth_width = binary_from_stream(stream, 'II')
 
         depth_pixels = None

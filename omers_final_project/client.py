@@ -15,12 +15,9 @@ def upload_snapshot(address: str, reader: Reader):
     for thought in reader.thoughts:
         with Connection.connect(ip, int(port)) as connection:
             # print(reader)
-            hello = Hello(reader.user_id, reader.user_name, reader.birth, reader.gender)
+            hello = Hello(reader.user)
             # print(hello.serialize())
             import io
             connection.send(hello.serialize())
             config = Config.deserialize(connection.receive())
-            print(config)
             connection.send(thought.serialize(config.fields))
-        # given_thought = Thought(int(user), int(time.time()), thought)
-        # connection.send(given_thought.serialize())

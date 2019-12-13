@@ -88,24 +88,21 @@ class Snapshot:
                f')'
 
     def serialize(self, fields):
-        translation = self.translation if 'translation' in fields else (0, 0, 0)
-        rotation = self.rotation if 'rotation' in fields else (0, 0, 0, 0)
+        if 'pose' in fields:
+            translation = self.translation
+            rotation = self.rotation
+        else:
+            translation = (0, 0, 0)
+            rotation = (0, 0, 0, 0)
         feelings = self.feelings if 'feelings' in fields else (0, 0, 0, 0)
         w, h, data = self.image if 'color_image' in fields else (0, 0, b'')
-        d_w, d_h, d_data = self.image_depth if 'image_depth' in fields else (0, 0, b'')
+        d_w, d_h, d_data = self.image_depth if 'depth_image' in fields else (0, 0, [])
 
-        # print(type(data))
-        # print(len(data))
-        # print(data[0])
-
-        # TODO turn the tuple into a binary string.
         params = [self.timestamp, *translation, *rotation, h, w]
         if data:
             params.append(data)
-            # params.extend([data])
         params.extend([d_w, d_h])
-        if d_data:
-            params.append(d_data)
+        params.extend(d_data)
         return struct.pack(f'<QdddddddII{len(data)}sII{len(d_data)}fffff',
                            *params, *feelings)
 
@@ -121,7 +118,7 @@ class Snapshot:
         depth_height, depth_width = binary_from_stream(stream, 'II')
 
         depth_pixels = None
-        if 'image_depth' in fields:
+        if 'depth_image' in fields:
             depth_pixels = binary_from_stream(stream, f'{depth_height * depth_width}f')
 
         hunger, thirst, exhaustion, happiness = binary_from_stream(stream, 'ffff')

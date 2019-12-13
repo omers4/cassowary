@@ -12,30 +12,17 @@ from .utils.parser import Parser
 FORMAT = 'LLI'
 PACK_SIZE = struct.calcsize('LLI')
 
-FIELDS = ['translation', 'color_image']
-
-
-def save_user_data(thought_obj, data_dir):
-    date_repr = str(datetime.datetime.fromtimestamp(thought_obj.timestamp))\
-        .replace(' ', '_').replace(':', '-')
-    filepath = f'{data_dir}/{thought_obj.user_id}/{date_repr}.txt'
-    if not os.path.exists(os.path.dirname(filepath)):
-        os.makedirs(os.path.dirname(filepath))
-    add_space = os.path.exists(filepath)
-    with open(filepath, 'a') as f:
-        if add_space:
-            f.write('\n')
-        f.write(thought_obj.thought)
+FIELDS = ['pose', 'color_image', 'depth_image']
 
 
 class Handler(threading.Thread):
     lock = threading.Lock()
 
-    def __init__(self, connection: Connection, data_dir: str):
+    def __init__(self, connection: Connection, data_dir: str, parsers: dict):
         super(Handler, self).__init__()
         self.connection = connection
         self.data_dir = data_dir
-        self.parsers = {key: cls(data_dir) for key, cls in Parser.parsers.items() if key in FIELDS}
+        self.parsers = parsers
 
     def run(self):
         with self.connection as connection:
@@ -54,8 +41,9 @@ class Handler(threading.Thread):
 
 def run_server(address, data_dir):
     ip, port = address
+    parsers = {key: cls(data_dir) for key, cls in Parser.parsers.items() if key in FIELDS}
     with Listener(port, host=ip) as listener:
         while True:
             connection = listener.accept()
-            handler = Handler(connection, data_dir)
+            handler = Handler(connection, data_dir, parsers)
             handler.start()

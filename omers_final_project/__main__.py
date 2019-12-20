@@ -12,7 +12,22 @@ def cli():
     pass
 
 
-@cli.command()
+@cli.group('web')
+def web():
+    pass
+
+
+@cli.group('server')
+def server():
+    pass
+
+
+@cli.group('client')
+def client():
+    pass
+
+
+@server.command()
 @click.argument('address')
 @click.argument('data')
 def run(address, data):
@@ -26,7 +41,7 @@ def run(address, data):
         return 1
 
 
-@cli.command()
+@client.command()
 @click.argument('address')
 @click.argument('path')
 @click.argument('version')
@@ -43,7 +58,7 @@ def upload(address, path, version):
         return 1
 
 
-@cli.command()
+@web.command()
 @click.argument('address')
 @click.argument('data')
 def run_web_server(address, data):
@@ -57,7 +72,7 @@ def run_web_server(address, data):
         return 1
 
 
-@cli.command()
+@client.command()
 @click.argument('path')
 @click.argument('version')
 def read(path, version):

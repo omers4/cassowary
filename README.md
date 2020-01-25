@@ -1,4 +1,4 @@
-# omers-final-project
+# cassowary
 
 [![Build Status](https://travis-ci.org/omers4/omers-final-project.svg?branch=master)](https://travis-ci.org/omers4/omers-final-project)
 [![codecov](https://codecov.io/gh/omers4/omers-final-project/branch/master/graph/badge.svg)](https://codecov.io/gh/omers4/omers-final-project)
@@ -9,9 +9,9 @@
 1. Clone the repository and enter it:
 
     ```sh
-    $ git clone git@github.com:advanced-system-design/omers-final-project.git
+    $ git clone git@github.com:omers4/cassowary.git
     ...
-    $ cd omers-final-project/
+    $ cd cassowary/
     ```
 
 2. Run the installation script and activate the virtual environment:
@@ -20,7 +20,7 @@
     $ ./scripts/install.sh
     ...
     $ source .env/bin/activate
-    [omers final project] $
+    [cassowary] $
     ```
 
 3. To check that everything is working as expected, run the tests:
@@ -33,7 +33,7 @@
 
 ## Usage
 
-The `omers-final-project` package also provide a command-line interface:
+The `cassowary` package also provide a command-line interface:
 
 The CLI provides the following commands:
 

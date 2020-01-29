@@ -2,9 +2,10 @@ import gzip
 from ..utils.binary_utils import read_message_by_length
 from ..utils.cortex_pb2 import User as ProtobuffUser, Snapshot as ProtobuffSnapshot
 from ..utils.protocol import Snapshot, User
+from .base_reader import BaseReader
 
 
-class ProtobuffReader:
+class ProtobuffReader(BaseReader):
     def __init__(self, sample_path):
         self.file = gzip.open(sample_path, 'rb')
 

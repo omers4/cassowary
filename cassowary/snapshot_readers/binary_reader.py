@@ -1,8 +1,9 @@
 from ..utils.binary_utils import binary_from_stream
 from ..utils.protocol import User, Snapshot
+from .base_reader import BaseReader
 
 
-class BinaryReader:
+class BinaryReader(BaseReader):
     def __init__(self, sample_path):
         self.file = open(sample_path, 'rb')
 

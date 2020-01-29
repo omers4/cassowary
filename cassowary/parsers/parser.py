@@ -3,7 +3,7 @@ import json
 import os
 import numpy
 
-from .protocol import Snapshot
+from ..utils.protocol import Snapshot
 from matplotlib.pyplot import imshow
 import matplotlib.cm
 from PIL import Image

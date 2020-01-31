@@ -55,3 +55,16 @@ done
 ```sh
 $ python -m run-web-server ADDRESS DATA_DIR
 ```
+
+### How to add a new parser
+
+1. Add a new module called `yourname_parser.py` inside `parsers` package
+2. Inside yourname_parser.py, add a new class decorated with `@parser` and inherits BaseParser, for example:
+```@parser('pose')
+class PoseParser(BaseParser):
+    def parse(self, data):
+        return {}
+```
+3. Implement the parser to return your result in `parse` method.
+4. Test your parser, running `python -m cassowary.parsers parse myparser <json data>`
+5. You're good to go!

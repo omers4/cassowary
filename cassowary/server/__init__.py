@@ -1,22 +1,34 @@
+import json
 import threading
-from typing import Callable
 from ..utils.listener import Listener
 from ..utils.connection import Connection
 from ..utils.protocol import Hello, Config, Snapshot
-# from ..utils.parser import Parser
 
 
 FIELDS = ['pose', 'color_image', 'depth_image']
 
 
+def dump_snapshot(user_id, snapshot):
+    # TODO: dump the image data to raw files, if there is data a all
+    # TODO test all parser
+    # TODO Write a tutorial for a new parser
+    # TODO write unit tests for parsing
+    # TODO fields should be configurable... or, just send them all...
+
+    return json.dumps({
+        'user_id': user_id,
+        'timestamp': snapshot.timestamp,
+        'rotation': snapshot.rotation,
+        'translation': snapshot.translation})
+
+
 class Handler(threading.Thread):
     lock = threading.Lock()
 
-    def __init__(self, connection: Connection, publish: Callable[[str], None], parsers: dict):
+    def __init__(self, connection: Connection, publish):
         super(Handler, self).__init__()
         self.connection = connection
         self.publish = publish
-        self.parsers = parsers
 
     def run(self):
         with self.connection as connection:
@@ -27,21 +39,18 @@ class Handler(threading.Thread):
             snapshot = Snapshot.deserialize(connection.receive(), config.fields)
             print(snapshot.timestamp)
         Handler.lock.acquire()
+
         try:
-            pass
-            # for name, parser in self.parsers.items():
-            #     parse_result = parser.parse(hello.user.user_id, snapshot)
-            #     self.publish(parse_result)
+            to_publish = dump_snapshot(hello.user.user_id, snapshot)
+            self.publish(to_publish)
         finally:
             Handler.lock.release()
 
 
 def run_server(host: str, port: int, publish=print):
-    # parsers = {key: cls() for key, cls in Parser.parsers.items() if key in FIELDS}
     with Listener(port, host=host) as listener:
         print(f'Listening on {host}:{port}')
         while True:
             connection = listener.accept()
-            # handler = Handler(connection, data_dir, parsers)
-            handler = Handler(connection, publish, {})
+            handler = Handler(connection, publish)
             handler.start()

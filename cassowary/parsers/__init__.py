@@ -1,2 +1,7 @@
+from .parsers import Parsers
+
+
 def run_parser(parser_name, data):
-    print(f'parsing {parser_name}')
+    Parsers.load_parsers()
+    parser = Parsers.parsers[parser_name]()
+    return parser.parse(data)

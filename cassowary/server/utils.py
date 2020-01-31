@@ -3,12 +3,11 @@ import os
 
 
 def create_path_dirs(path):
-    dir_path = os.path.dirname(path)
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
-def get_path(data_dir, user_id, timestamp):
+def get_path(data_dir, user_id, timestamp, name):
     date = datetime.datetime(1970, 1, 1) + datetime.timedelta(milliseconds=timestamp)
     formatted = date.strftime("%Y-%m-%d_%H-%M-%S-%f")
-    return f'{data_dir}/{user_id}/{formatted}'
+    return f'{data_dir}/{user_id}_{formatted}_{name}'

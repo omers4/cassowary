@@ -1,25 +1,38 @@
 import json
+import struct
 import threading
 from ..utils.listener import Listener
 from ..utils.connection import Connection
 from ..utils.protocol import Hello, Config, Snapshot
+from . import utils
 
 
-FIELDS = ['pose', 'color_image', 'depth_image']
+FIELDS = ['pose', 'feelings', 'color_image', 'depth_image']
 
 
 def dump_snapshot(user_id, snapshot):
-    # TODO: dump the image data to raw files, if there is data a all
-    # TODO test all parser
-    # TODO Write a tutorial for a new parser
-    # TODO write unit tests for parsing
-    # TODO fields should be configurable... or, just send them all...
+    w, h, data = snapshot.image
+    d_w, d_h, d_data = snapshot.image_depth
+
+    dir_path = '/tmp/parsed_results'
+    utils.create_path_dirs(dir_path)
+    raw_color_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'raw_color_image')
+    raw_depth_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'raw_depth_image')
+    color_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'color_image.jpg')
+    depth_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'depth_image.jpg')
+    with open(raw_color_path, 'wb') as f:
+        f.write(data)
+    with open(raw_depth_path, 'wb') as f:
+        f.write(struct.pack(f'{len(d_data)}f', *d_data))
 
     return json.dumps({
         'user_id': user_id,
+        'feelings': snapshot.feelings,
         'timestamp': snapshot.timestamp,
         'rotation': snapshot.rotation,
-        'translation': snapshot.translation})
+        'translation': snapshot.translation,
+        'color_image': [w, h, raw_color_path, color_path],
+        'depth_image': [d_w, d_h, raw_depth_path, depth_path]})
 
 
 class Handler(threading.Thread):

@@ -1,6 +1,8 @@
 import json
 
 import click
+import furl
+
 from . import run_parser
 from . import Parsers
 
@@ -23,13 +25,10 @@ def parse_command(parser_name: str, raw_data_path: str):
 @click.argument('parser_name')
 @click.argument('publish_url')
 def run_parser_command(parser_name: str, publish_url: str):
+    formatted_publish_url = furl.furl(publish_url)
     Parsers.load_parsers()
     parser = Parsers.parsers[parser_name]()
-    parser.init_message_queue('127.0.0.1', '5672')
-
-    while True:
-        pass
-    # Somehow keep this open, so we can keep sending
+    parser.init_message_queue(formatted_publish_url.host, formatted_publish_url.port)
 
 
 if __name__ == '__main__':

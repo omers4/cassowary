@@ -37,9 +37,9 @@ class Hello:
     @staticmethod
     def deserialize(stream):
         user_id, user_name_length = binary_from_stream(stream, '<QI')
-        user_name = binary_from_stream(stream, f'{user_name_length}s')[0]
+        user_name = binary_from_stream(stream, f'{user_name_length}s')[0].decode('ASCII')
         birth, gender = binary_from_stream(stream, '<Ic')
-        return Hello(User(user_id, user_name, birth, gender))
+        return Hello(User(user_id, user_name, birth, gender.decode('ASCII')))
 
 
 class Config:

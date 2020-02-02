@@ -17,7 +17,8 @@ class DepthImageParser(BaseParser):
         os.remove(from_path)
         imshow(numpy.reshape(img_data, (width, height)), cmap=matplotlib.cm.RdYlGn)
         matplotlib.pyplot.savefig(to_path)
-        result = {'id': data['user_id'],
+        result = {'name': 'depth_image',
+                  'user_id': data['user_id'],
                   'timestamp': data['timestamp'],
-                  'depth_image_path': to_path}
+                  'depth_image': to_path}
         return result

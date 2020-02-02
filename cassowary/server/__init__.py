@@ -10,23 +10,26 @@ from . import utils
 FIELDS = ['pose', 'feelings', 'color_image', 'depth_image']
 
 
-def dump_snapshot(user_id, snapshot):
+def dump_snapshot(user, snapshot):
     w, h, data = snapshot.image
     d_w, d_h, d_data = snapshot.image_depth
 
     dir_path = '/tmp/parsed_results'
     utils.create_path_dirs(dir_path)
-    raw_color_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'raw_color_image')
-    raw_depth_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'raw_depth_image')
-    color_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'color_image.jpg')
-    depth_path = utils.get_path(dir_path, user_id, snapshot.timestamp, 'depth_image.jpg')
+    raw_color_path = utils.get_path(dir_path, user.user_id, snapshot.timestamp, 'raw_color_image')
+    raw_depth_path = utils.get_path(dir_path, user.user_id, snapshot.timestamp, 'raw_depth_image')
+    color_path = utils.get_path(dir_path, user.user_id, snapshot.timestamp, 'color_image.jpg')
+    depth_path = utils.get_path(dir_path, user.user_id, snapshot.timestamp, 'depth_image.jpg')
     with open(raw_color_path, 'wb') as f:
         f.write(data)
     with open(raw_depth_path, 'wb') as f:
         f.write(struct.pack(f'{len(d_data)}f', *d_data))
 
     return json.dumps({
-        'user_id': user_id,
+        'user_id': user.user_id,
+        'user_name': user.user_name,
+        'birth': user.birth,
+        'gender': user.gender,
         'feelings': snapshot.feelings,
         'timestamp': snapshot.timestamp,
         'rotation': snapshot.rotation,
@@ -54,7 +57,7 @@ class Handler(threading.Thread):
         Handler.lock.acquire()
 
         try:
-            to_publish = dump_snapshot(hello.user.user_id, snapshot)
+            to_publish = dump_snapshot(hello.user, snapshot)
             self.publish(to_publish)
         finally:
             Handler.lock.release()

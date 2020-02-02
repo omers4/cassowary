@@ -1,1 +1,1 @@
-{"user_id": 1, "timestamp": 123, "translation": {}, "rotation": {}}
+{"name": "pose", ""user_id": 1, "timestamp": 1234, "pose": {"translation": {"x": 2, "y": 3, "z": 4}, "rotation": {"x": 2, "y": 3, "z": 4, "w": 1}}}

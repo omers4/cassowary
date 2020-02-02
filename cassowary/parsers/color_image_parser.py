@@ -14,7 +14,8 @@ class ColorImageParser(BaseParser):
             image = Image.frombytes('RGB', (width, height), img_data)
             image.save(to_path)
             os.remove(from_path)
-            result = {'id': data['user_id'],
+            result = {'name': 'color_image',
+                      'user_id': data['user_id'],
                       'timestamp': data['timestamp'],
-                      'color_image_path': to_path}
+                      'color_image': to_path}
             return result

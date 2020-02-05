@@ -28,9 +28,9 @@ class MongoConnection:
         Saves user data in mongo
         :param data: the data as consumed by the message queue
         """
-        self.users_col.update({'user_id': data['user_id']},
-                              {'$set': data['personal_details']},
-                              upsert=True)
+        self.users_col.update_one({'user_id': data['user_id']},
+                                  {'$set': data['personal_details']},
+                                  upsert=True)
 
     def save(self, parser_name, data):
         """
@@ -40,7 +40,7 @@ class MongoConnection:
         """
         if parser_name == 'personal_details':
             return self.save_user(data)
-        self.snapshots_col.update(
+        self.snapshots_col.update_one(
             {'user_id': data['user_id'], 'timestamp': data['timestamp']},
             {'$set': {
                 'user_id': data['user_id'],

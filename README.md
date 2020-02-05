@@ -1,7 +1,7 @@
 # cassowary
 
 [![Build Status](https://travis-ci.org/omers4/cassowary.svg?branch=master)](https://travis-ci.org/omers4/cassowary)
-[![codecov](https://codecov.io/gh/omers4/omers-final-project/branch/master/graph/badge.svg)](https://codecov.io/gh/omers4/omers-final-project)
+[![codecov](https://codecov.io/gh/omers4/cassowary/branch/master/graph/badge.svg)](https://codecov.io/gh/omers4/cassowary)
 [![Documentation Status](https://readthedocs.org/projects/omers-final-project/badge/?version=latest)](https://omers-final-project.readthedocs.io/en/latest/?)
 
 ## Installation

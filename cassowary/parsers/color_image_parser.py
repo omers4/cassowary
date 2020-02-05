@@ -8,6 +8,11 @@ from PIL import Image
 @parser('color_image')
 class ColorImageParser(BaseParser):
     def parse(self, data):
+        """
+        :return: This parser receives the path to the raw color
+        image data and parses it to a color image,
+        then saving it in a different location.
+        """
         width, height, from_path, to_path = data['color_image']
         with open(from_path, 'rb') as raw_image:
             img_data = raw_image.read()

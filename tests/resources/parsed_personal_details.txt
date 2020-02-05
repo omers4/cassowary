@@ -1,0 +1,10 @@
+{
+    "name": "personal_details",
+    "user_id": 1,
+    "personal_details": {
+        "user_id": 1,
+        "user_name": "Omer",
+        "birth": 45,
+        "gender": "f"
+    }
+}

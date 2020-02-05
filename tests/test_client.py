@@ -3,8 +3,7 @@ import time
 
 import pytest
 from click.testing import CliRunner
-from cassowary.client.__main__ import upload_sample_command
-
+from cassowary import client
 
 # @pytest.fixture
 # def server():
@@ -21,6 +20,6 @@ from cassowary.client.__main__ import upload_sample_command
 #
 # def test_client_cli_sanity(server):
 #     runner = CliRunner()
-#     result = runner.invoke(upload_sample_command, ['/home/user/Downloads/sample.mind.gz'])
+#     result = runner.invoke(client.__main__.upload_sample_command, ['/home/user/Downloads/sample.mind.gz'])
 #     assert 'Start uploading the snapshot in my_path to 127.0.0.1:8000' in result.output
 #     assert 'Done uploading the snapshot' in result.output

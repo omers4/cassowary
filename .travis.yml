@@ -7,3 +7,6 @@ script:
   - pytest --cov-report term --cov=cassowary
 after_success:
   - codecov
+services:
+  - mongodb
+  - rabbitmq

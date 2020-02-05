@@ -10,6 +10,9 @@ savers = {
 
 
 class Saver:
+    """
+    Saver represents an object that manages db connection and saves to db
+    """
     def __init__(self, database_url):
         formatted_database_url = furl.furl(database_url)
         db_type = formatted_database_url.scheme
@@ -18,6 +21,11 @@ class Saver:
         self.connection = db_connection_cls
 
     def save(self, parser_name, data):
+        """
+        Saves parsed data in db
+        :param parser_name: the name of the parser, ie. pose
+        :param data: the data as consumed by the message queue
+        """
         with self.connection.connect(self.database_url) as connection:
             connection.save(parser_name, data)
 

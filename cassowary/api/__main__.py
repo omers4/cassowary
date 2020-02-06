@@ -2,9 +2,18 @@ import click
 from . import run_api_server
 
 
-@click.command('run-server')
+@click.group()
+def cli():
+    pass
+
+
+@cli.command('run-server')
 @click.option('-h', '--host', default='127.0.0.1', help='API Server hostname / IP')
-@click.option('-p', '--port', default=5000, type=int, help='Port to connect run API server with')
+@click.option('-p', '--port', default=8000, type=int, help='Port to connect run API server with')
 @click.option('-d', '--database', default='mongodb://127.0.0.1:27017', help='Database hostname / IP')
-def run_server_command(host: str, port: int, database: ''):
+def run_server_command(host: str, port: int, database: str):
     run_api_server(host, port, database)
+
+
+if __name__ == '__main__':
+    cli()

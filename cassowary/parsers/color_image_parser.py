@@ -22,5 +22,5 @@ class ColorImageParser(BaseParser):
             result = {'name': 'color_image',
                       'user_id': data['user_id'],
                       'timestamp': data['timestamp'],
-                      'color_image': to_path}
+                      'color_image': {'path': to_path}}
             return result

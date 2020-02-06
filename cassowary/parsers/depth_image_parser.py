@@ -27,5 +27,5 @@ class DepthImageParser(BaseParser):
         result = {'name': 'depth_image',
                   'user_id': data['user_id'],
                   'timestamp': data['timestamp'],
-                  'depth_image': to_path}
+                  'depth_image': {'path': to_path}}
         return result

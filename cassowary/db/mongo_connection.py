@@ -63,7 +63,7 @@ class MongoConnection:
     def get_user(self, user_id: int) -> Optional[dict]:
         return self.users_col.find_one({'user_id': user_id}, {'_id': 0})
 
-    def get_user_snapshots(self, user_id: int) -> list:
+    def get_user_snapshots_ids(self, user_id: int) -> list:
         """
         This method returns metadata of a user's snapshots
         :param user_id: the id of the user

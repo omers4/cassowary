@@ -28,7 +28,7 @@ def register_thoughts_views(db):
         user = db.get_user(user_id)
         if user is None:
             return '', 404
-        user_snapshots = db.get_user_snapshots(user_id)
+        user_snapshots = db.get_user_snapshots_ids(user_id)
         return {'snapshots': user_snapshots}, 200
 
     @app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>')

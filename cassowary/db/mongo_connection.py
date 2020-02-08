@@ -76,6 +76,16 @@ class MongoConnection:
                      for snapshot in snapshots_cursor]
         return snapshots
 
+    def get_user_snapshots_data(self, user_id: int) -> list:
+        """
+        This method returns metadata of a user's snapshots
+        :param user_id: the id of the user
+        :return: the user snapshot, in the format {id, date}
+        """
+        snapshots_cursor = self.snapshots_col.find({'user_id': user_id},
+                                                   {'_id': 0})
+        return list(snapshots_cursor)
+
     def get_user_snapshot(self, user_id: int, snapshot_id: int) -> Optional[dict]:
         """
         This method returns metadata of a specific snapshot

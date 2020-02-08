@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cassowary - user page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/timeline.min.js"></script>
+    <link rel="stylesheet" href="/static/css/timeline.min.css" />
+    <script>
+        $( document ).ready(function() {
+            $('.js-timeline').Timeline({
+            });
+        });
+    </script>
+</head>
+<body>
+    {{ user.user_name }}
+    {{ user.birth }}
+    {{ user.gender }}
+    {{ user.user_id }}
+
+    <div class="timeline-container timeline-theme-1">
+      <div class="timeline js-timeline">
+         {% for snapshot in snapshots %}
+          <div data-time="{{snapshot.timestamp}}">
+            {{snapshot.feelings}}
+            {{snapshot.color_image}}
+            {{snapshot.depth_image}}
+            {{snapshot.pose}}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+</body>
+</html>

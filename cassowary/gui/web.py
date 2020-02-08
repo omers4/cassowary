@@ -13,5 +13,5 @@ def register_views(db):
         user = db.get_user(user_id)
         if user is None:
             return render_template('404.html')
-        snapshots = db.get_user_snapshots_ids(user_id)
-        return render_template('index.html', user=user, snapshots=snapshots)
+        snapshots = db.get_user_snapshots_data(user_id)
+        return render_template('user.html', user=user, snapshots=snapshots)

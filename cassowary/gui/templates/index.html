@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cassowary</title>
+    <title>Cassowary - home page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 </head>
 <body>
-    <ul>
+    <h1>Welcome to Cassowary</h1>
+    <h2>
+        Choose a user and see it's snapshots -
+    </h2>
+    <div class="list-group">
     {% for user in users %}
-      <li><a href="users/{{ user.user_id }}">{{ user.user_name }}</a></li>
+      <a class="list-group-item list-group-item-action" href="users/{{ user.user_id }}">{{ user.user_name }}</a>
     {% endfor %}
-    </ul>
-    {{ user }}
-    {{ snapshots }}
+    </div>
 </body>
 </html>

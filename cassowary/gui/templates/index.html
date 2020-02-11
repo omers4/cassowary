@@ -7,14 +7,24 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 </head>
 <body>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+      </ol>
+    </nav>
     <h1>Welcome to Cassowary</h1>
-    <h2>
-        Choose a user and see it's snapshots -
-    </h2>
-    <div class="list-group">
-    {% for user in users %}
-      <a class="list-group-item list-group-item-action" href="users/{{ user.user_id }}">{{ user.user_name }}</a>
-    {% endfor %}
-    </div>
+    {% if users %}
+        <h2>
+            Choose a user and see it's snapshots -
+        </h2>
+        <div class="list-group">
+        {% for user in users %}
+          <a class="list-group-item list-group-item-action" href="users/{{ user.user_id }}">{{ user.user_name }}</a>
+        {% endfor %}
+        </div>
+    {% else %}
+        No users found!
+    {% endif %}
+
 </body>
 </html>

@@ -13,21 +13,60 @@
             });
         });
     </script>
+    <style>
+         .snapshotImage {
+            width: 100%;
+         }
+    </style>
 </head>
 <body>
-    {{ user.user_name }}
-    {{ user.birth }}
-    {{ user.gender }}
-    {{ user.user_id }}
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ user.user_name }}</li>
+      </ol>
+    </nav>
+
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{ user.user_name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ snapshots|length }} snapshots</h6>
+        <p class="card-text">Age: {{ user.age }}</p>
+        <p class="card-text">Gender: {{ user.gender }}</p>
+      </div>
+    </div>
 
     <div class="timeline-container timeline-theme-1">
       <div class="timeline js-timeline">
          {% for snapshot in snapshots %}
-          <div data-time="{{snapshot.timestamp}}">
-            {{snapshot.feelings}}
-            {{snapshot.color_image}}
-            {{snapshot.depth_image}}
+          <div data-time="{{snapshot.date}}">
+              <div class="container">
+              <div class="row">
+                {{snapshot.date}} snapshot
+              </div>
+              <div class="row">
+                <div class="col-7">
+                    <div class="media">
+                       <img class="snapshotImage" src="/users/{{user.user_id}}/snapshots/{{snapshot.timestamp}}/color_image/data" alt="Color image" />
+                    </div>
+                </div>
+                <div class="col">
             {{snapshot.pose}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-7">
+                    <div class="media">
+                       <img class="snapshotImage" src="/users/{{user.user_id}}/snapshots/{{snapshot.timestamp}}/depth_image/data" alt="Depth image" />
+                    </div>
+                </div>
+                <div class="col">
+                {{snapshot.feelings}}
+                </div>
+              </div>
+            </div>
           </div>
         {% endfor %}
       </div>

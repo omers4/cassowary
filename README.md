@@ -56,20 +56,6 @@ after activating the virtual environment, you can run:
 from cassowary.<part> import <command>
 ```
 
-### How to add a new parser
-
-1. Add a new module called `yourname_parser.py` inside `parsers` package
-2. Inside yourname_parser.py, add a new class decorated with `@parser` and inherits BaseParser, for example:
-```@parser('pose')
-class PoseParser(BaseParser):
-    def parse(self, data):
-        return {}
-```
-3. Implement the parser to return your result in `parse` method.
-4. Test your parser, running `python -m cassowary.parsers parse myparser <json data>`
-5. Add your parser to the run-pipelines.sh script in the following format: 
-6. You're good to go!
-
 # The components
 
 ## The client - Upload a snapshot
@@ -106,6 +92,66 @@ From python:
 ...     print(message)
 >>> run_server(host='127.0.01', port=8000, publish=print_message)
 ```
+
+## The message queue & the parsers
+The message queue is RabbitMQ, and the parsers listens to RabbitMQ.
+The parsers connect to the queue, listen for snapshot parts and process them, then publish them back to the queue.
+From command line, you can parse one time or run the parser as a server:
+```sh
+$ python -m cassowary.parsers parse 'pose' 'snapshot.raw'
+$ python -m cassowary.parsers run-parser 'pose' 'rabbitmq://127.0.0.1:5672/'
+```
+
+From python:
+```python
+>>> from cassowary.parsers import run_parser
+>>> data = … 
+>>> result = run_parser('pose', data)
+```
+
+The following parsers are currently available:
+1. *Personal details*: metadata about the user. ```personal_details```
+2. *Pose* - aka ```pose```
+3. *Color image* - aka ```color_image```
+4. *Depth image* - aka ```depth_image```
+5. *Feelings* - aka ```feelings```
+
+## The DB & the saver
+The current supported db is mongodb, but it's easy to extend the support to other dbs, by adding a wrapper to ```databases``` dict inside ```db/utils.py```
+The saver listens to the message queue, and upon receiving a part, saves it to the db.
+
+From command line, you can save one time or run the saver as a service:
+```sh
+$ python -m cassowary.saver save                     \
+      -d 'mongodb://127.0.0.1:27017' \
+     'pose'                                       \
+     'pose.result' 
+$ python -m cassowary.saver run-saver  \
+      'mongodb://127.0.0.1:27017' \
+      'rabbitmq://127.0.0.1:5672/'
+```
+
+From python:
+```python
+>>> from cassowary.saver import Saver
+>>> saver = Saver(database_url)
+>>> data = …
+>>> saver.save('pose', data)
+```
+
+### How to add a new parser
+
+1. Add a new module called `yourname_parser.py` inside `parsers` package
+2. Inside yourname_parser.py, add a new class decorated with `@parser` and inherits BaseParser, for example:
+```@parser('pose')
+class PoseParser(BaseParser):
+    def parse(self, data):
+        return {}
+```
+3. Implement the parser to return your result in `parse` method.
+4. Test your parser, running `python -m cassowary.parsers parse myparser <json data>`
+5. Add your parser to the run-pipelines.sh script in the following format: 
+6. You're good to go!
 
 
 ## The HTTP API

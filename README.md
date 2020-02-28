@@ -116,6 +116,20 @@ The following parsers are currently available:
 4. *Depth image* - aka ```depth_image```
 5. *Feelings* - aka ```feelings```
 
+### How to add a new parser
+
+1. Add a new module called `yourname_parser.py` inside `parsers` package
+2. Inside yourname_parser.py, add a new class decorated with `@parser` and inherits BaseParser, for example:
+```@parser('pose')
+class PoseParser(BaseParser):
+    def parse(self, data):
+        return {}
+```
+3. Implement the parser to return your result in `parse` method.
+4. Test your parser, running `python -m cassowary.parsers parse myparser <json data>`
+5. Add your parser to the run-pipelines.sh script in the following format: 
+6. You're good to go!
+
 ## The DB & the saver
 The current supported db is mongodb, but it's easy to extend the support to other dbs, by adding a wrapper to ```databases``` dict inside ```db/utils.py```
 The saver listens to the message queue, and upon receiving a part, saves it to the db.
@@ -139,22 +153,8 @@ From python:
 >>> saver.save('pose', data)
 ```
 
-### How to add a new parser
 
-1. Add a new module called `yourname_parser.py` inside `parsers` package
-2. Inside yourname_parser.py, add a new class decorated with `@parser` and inherits BaseParser, for example:
-```@parser('pose')
-class PoseParser(BaseParser):
-    def parse(self, data):
-        return {}
-```
-3. Implement the parser to return your result in `parse` method.
-4. Test your parser, running `python -m cassowary.parsers parse myparser <json data>`
-5. Add your parser to the run-pipelines.sh script in the following format: 
-6. You're good to go!
-
-
-## The HTTP API
+## The HTTP API & The CLI
 The http API is implemented using Flask.
 
 From command line:
@@ -186,5 +186,38 @@ Returns the list of the specified user's snapshot IDs and datetimes only.|
 Returns the specified snapshot's details: ID, datetime, and the available results' names only (e.g. pose).
 
 `GET /users/user-id/snapshots/snapshot-id/result-name`
-Returns the specified snapshot's result in a reasonable format.
+Returns the specified snapshot's result, if it's binary it returns the url to get the binary
 
+`GET /users/user-id/snapshots/snapshot-id/result-name/data`
+Returns the specified snapshot result as binary
+
+### The CLI
+Once the API server is running, you can start using the CLI!
+The supported commands are -
+```
+$ python -m cassowary.cli get-users -h HOST -p PORT
+$ python -m cassowary.cli get-user 1 -h HOST -p PORT
+$ python -m cassowary.cli get-snapshots 1 -h HOST -p PORT
+$ python -m cassowary.cli get-snapshot 1 2 -h HOST -p PORT
+$ python -m cassowary.cli get-result 1 2 'pose' -h HOST -p PORT -s PATH_TO_PRODUCT
+```
+
+
+
+## The GUI
+The GUI is implemented using Flask templates, using bootstrap.
+
+From command line:
+```sh
+python -m cassowary.gui run-server -h 127.0.0.1 -p 8080 -d mongodb://127.0.0.1:27017
+```
+
+From Python:
+```python
+>>> from cassowary.gui import run_server
+>>> run_server(
+...     host = '127.0.0.1',
+...     port = 8080,
+...     database_url = 'mongodb://127.0.0.1:27017',
+... )
+```

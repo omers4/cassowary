@@ -18,6 +18,7 @@ def upload_sample(host: str, port: int, path: str, reader=ProtobuffReader):
             print(snapshot_file.user)
             for thought in snapshot_file.thoughts:
                 with Connection.connect(host, port) as connection:
+                    print('connected!')
                     hello = Hello(snapshot_file.user)
                     connection.send(hello.serialize())
                     config = Config.deserialize(connection.receive())

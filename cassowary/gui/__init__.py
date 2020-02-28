@@ -6,4 +6,4 @@ def run_server(host, port, database_url):
     db_cls = get_database(database_url)
     with db_cls.connect(database_url) as db:
         register_views(db)
-        app.run(host, port)
+        app.run(host, port, debug=True)

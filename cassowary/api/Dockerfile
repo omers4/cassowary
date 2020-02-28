@@ -1,5 +1,3 @@
-FROM python:3.8-alpine
-COPY ../../requirements.txt /
-RUN pip install -r /requirements.txt
-COPY cassowary/ /cassowary
-CMD ["python", "-m", "cassowary.api", "run-server"]
+FROM cassowary:requirements
+EXPOSE 8888
+ENTRYPOINT python3 -m cassowary.api run-server -p 8888 -d mongodb://mongocontainer.cassowarrynet:27017

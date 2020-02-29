@@ -18,7 +18,7 @@ sys.setrecursionlimit(1500)
 
 # -- Project information -----------------------------------------------------
 
-project = 'omers-final-project'
+project = 'cassowary'
 copyright = '2019, Omer Shlifka'
 author = 'Omer Shlifka'
 

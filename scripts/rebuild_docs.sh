@@ -1,2 +1,3 @@
-sphinx-apidoc -f -o source/ ../omers_final_project/
+cd docs
+sphinx-apidoc -f -o source/ ../cassowary/
 make html

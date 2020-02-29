@@ -1,7 +1,7 @@
-omers_final_project
-===================
+cassowary
+=========
 
 .. toctree::
    :maxdepth: 4
 
-   omers_final_project
+   cassowary

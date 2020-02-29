@@ -1,1 +1,0 @@
-python -m omers_final_project client upload 127.0.0.1:8000 /home/user/Downloads/sample.mind.gz v2

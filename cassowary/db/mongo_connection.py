@@ -53,8 +53,7 @@ class MongoConnection:
 
     def get_users(self) -> list:
         """
-        :return: the list of the current users,
-        each of them in the format {user_id, user_name}
+        :return: the list of the current users, each of them in the format {user_id, user_name}
         """
         users_cursor = self.users_col.find({},
                                            {'user_id': 1, 'user_name': 1, '_id': 0})

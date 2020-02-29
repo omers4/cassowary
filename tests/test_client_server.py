@@ -26,7 +26,7 @@ def run_test_server():
     run_server('0.0.0.0', 8200)
 
 
-def test_client_sanity(capsys):
+def test_client_server_sanity(capsys):
     """
     This system test verifies the basic protocol between the server and the client - hello-config-results.
     """

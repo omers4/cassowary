@@ -1,3 +1,5 @@
+import sys
+
 from ..utils.connection import Connection
 from ..snapshot_readers.protobuff_reader import ProtobuffReader
 from ..snapshot_readers.snapshot_file import SnapshotFile
@@ -26,5 +28,5 @@ def upload_sample(host: str, port: int, path: str, reader=ProtobuffReader):
                     connection.send(thought.serialize(config.fields))
         print('Done uploading the snapshot')
     except Exception as error:
-        print(f'ERROR: {error}')
+        print(f'ERROR uploading the snapshot: {error}', file=sys.stderr)
         return 1

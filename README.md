@@ -1,6 +1,7 @@
 # cassowary
 
 [![Build Status](https://travis-ci.org/omers4/cassowary.svg?branch=master)](https://travis-ci.org/omers4/cassowary)
+[![codecov](https://codecov.io/gh/omers4/cassowary/branch/master/graph/badge.svg)](https://codecov.io/gh/omers4/cassowary)
 [![Documentation Status](https://readthedocs.org/projects/omers-final-project/badge/?version=latest)](https://omers-final-project.readthedocs.io/en/latest/?)
 
 ## Installation
@@ -22,13 +23,6 @@
     [cassowary] $
     ```
 
-3. To check that everything is working as expected, run the tests:
-
-
-    ```sh
-    $ pytest tests/
-    ...
-    ```
 
 ## Run everything together
 requirements: docker, root access.
@@ -36,6 +30,13 @@ run the following script as root:
 ```sh
 ./scripts/run-pipelines.sh
 ```
+
+To check that everything is working as expected, run the tests:
+```sh
+$ pytest tests/
+...
+```
+    
 Once the script is done, you can:
 1. go to http://localhost:8080 to see the gui
 2. Call the http API, running on http://localhost:8888 (more on HTTP API later)

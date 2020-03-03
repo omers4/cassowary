@@ -1,4 +1,5 @@
 import io
+import os
 
 from flask import Flask, send_file
 
@@ -42,7 +43,8 @@ def register_thoughts_views(db):
         snapshot['results'] = list(snapshot['results'].keys())
         return snapshot, 200
 
-    @app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>/<result_name>')
+    @app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>/'
+               '<result_name>')
     def get_user_snapshot_result(user_id, snapshot_id, result_name):
         user = db.get_user(user_id)
         if user is None:
@@ -54,10 +56,12 @@ def register_thoughts_views(db):
             return NO_SUCH_SNAPSHOT_RESULT, 404
         result = snapshot['results'][result_name]
         if 'path' in result:
-            result['data'] = f'/users/{user_id}/snapshots/{snapshot_id}/{result_name}/data'
+            result['data'] = f'/users/{user_id}/snapshots/{snapshot_id}/' \
+                             f'{result_name}/data'
         return snapshot['results'][result_name], 200
 
-    @app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>/<result_name>/data')
+    @app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>/'
+               '<result_name>/data')
     def get_user_snapshot_result_image(user_id, snapshot_id, result_name):
         user = db.get_user(user_id)
         if user is None:
@@ -71,7 +75,9 @@ def register_thoughts_views(db):
             return NO_FURTHER_DATA, 404
 
         path = snapshot['results'][result_name]['path']
+        if not os.path.exists(path):
+            return NO_SUCH_SNAPSHOT_RESULT, 404
+
         with open(path, 'rb') as image:
             return send_file(io.BytesIO(image.read()),
                              mimetype='image/png')
-

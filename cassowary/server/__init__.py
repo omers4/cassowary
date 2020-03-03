@@ -14,7 +14,7 @@ def dump_snapshot(user, snapshot):
     w, h, data = snapshot.image
     d_w, d_h, d_data = snapshot.image_depth
 
-    dir_path = '/parsed_results'
+    dir_path = '/tmp/parsed_results'
     utils.create_path_dirs(dir_path)
     raw_color_path = utils.get_path(dir_path, user.user_id, snapshot.timestamp, 'raw_color_image')
     raw_depth_path = utils.get_path(dir_path, user.user_id, snapshot.timestamp, 'raw_depth_image')

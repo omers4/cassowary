@@ -23,6 +23,11 @@ def register_views(db):
         for snapshot in snapshots:
             timestamp = snapshot['timestamp']
             snapshot['date'] = datetime.datetime.fromtimestamp(timestamp / 1000)
+            if snapshot['pose']:
+                x, y, z = snapshot['pose']['translation']
+                snapshot['x'] = x
+                snapshot['y'] = y
+                snapshot['z'] = z
         return render_template('user.html', user=user, snapshots=snapshots)
 
     @app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>/<result_name>/data')

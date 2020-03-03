@@ -5,17 +5,10 @@
     <title>Cassowary - user page</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript" src="/static/js/timeline.min.js"></script>
-    <link rel="stylesheet" href="/static/css/timeline.min.css" />
-    <script>
-        $( document ).ready(function() {
-            $('.js-timeline').Timeline({
-            });
-        });
-    </script>
+
     <style>
          .snapshotImage {
-            width: 100%;
+            width: 250px;
          }
     </style>
 </head>
@@ -28,48 +21,61 @@
       </ol>
     </nav>
 
-
-    <div class="card m-3" style="width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title">{{ user.user_name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">{{ snapshots|length }} snapshots</h6>
-        <p class="card-text">Age: {{ user.age }}</p>
-        <p class="card-text">Gender: {{ user.gender }}</p>
-      </div>
-    </div>
-
-    <div class="timeline-container timeline-theme-1">
-      <div class="timeline js-timeline">
-         {% for snapshot in snapshots %}
-          <div data-time="{{snapshot.date}}">
-              <div class="container">
-              <div class="row">
-                {{snapshot.date}} snapshot
-              </div>
-              <div class="row">
-                <div class="col-7">
-                    <div class="media">
-                       <img class="snapshotImage" src="/users/{{user.user_id}}/snapshots/{{snapshot.timestamp}}/color_image/data" alt="Color image" />
-                    </div>
-                </div>
-                <div class="col">
-            {{snapshot.pose}}
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-7">
-                    <div class="media">
-                       <img class="snapshotImage" src="/users/{{user.user_id}}/snapshots/{{snapshot.timestamp}}/depth_image/data" alt="Depth image" />
-                    </div>
-                </div>
-                <div class="col">
-                {{snapshot.feelings}}
-                </div>
+    <div class="row">
+        <div class="col-3">
+            <div class="card m-3" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">{{ user.user_name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ snapshots|length }} snapshots</h6>
+                <p class="card-text">Age: {{ user.age }}</p>
+                <p class="card-text">Gender: {{ "male" if user.gender == 'm' else "female" }}</p>
               </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
+        </div>
+        <div class="col">
+            <h1>Snapshots</h1>
+
+            {% if snapshots %}
+                <table class="table">
+                    <tr>
+                        <th>Date</th>
+                        <th>Pose</th>
+                        <th>Feeling</th>
+                        <th>Color image</th>
+                        <th>Depth Image</th>
+                    </tr>
+                {% for snapshot in snapshots %}
+                <tr>
+                    <td>{{snapshot.date}}</td>
+                    <td><span class="badge badge-secondary">x: {{"%.2f"|format(snapshot.x)}}, y: {{"%.2f"|format(snapshot.y)}}, z: {{"%.2f"|format(snapshot.z)}}</span></td>
+                    <td>
+                        <div></div><span class="badge badge-primary">{{"%.2f"|format(snapshot.feelings.hunger)}} Hunger</span></div>
+                        <div><span class="badge badge-secondary">{{"%.2f"|format(snapshot.feelings.exhaustion)}} Exhaustion</span></div>
+                        <div><span class="badge badge-success">{{"%.2f"|format(snapshot.feelings.happiness)}} Happiness</span></div>
+                        <div><span class="badge badge-danger">{{"%.2f"|format(snapshot.feelings.thirst)}} Thirst</span></div>
+                    </td>
+                    <td>
+                         <div class="media">
+                           <img class="snapshotImage" src="/users/{{user.user_id}}/snapshots/{{snapshot.timestamp}}/color_image/data" alt="Color image" />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="media">
+                           <img class="snapshotImage" src="/users/{{user.user_id}}/snapshots/{{snapshot.timestamp}}/depth_image/data" alt="Depth image" />
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+
+             </table>
+
+            {% else %}
+                No snapshots were found!
+            {% endif %}
+
+        </div>
     </div>
+
+
 </body>
 </html>

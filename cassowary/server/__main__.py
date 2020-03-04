@@ -18,10 +18,12 @@ def run_server_command(publish_url: str, host: str, port: int):
     formatted_publish_url = furl.furl(publish_url)
 
     def rabbitmq_publish(message):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(formatted_publish_url.host,
-                                                                       formatted_publish_url.port))
+        pika_params = pika.ConnectionParameters(formatted_publish_url.host,
+                                                formatted_publish_url.port)
+        connection = pika.BlockingConnection(pika_params)
         channel = connection.channel()
-        channel.exchange_declare(exchange='raw-snapshot', exchange_type='fanout')
+        channel.exchange_declare(exchange='raw-snapshot',
+                                 exchange_type='fanout')
         channel.basic_publish(exchange='raw-snapshot',
                               routing_key='server',
                               body=message)

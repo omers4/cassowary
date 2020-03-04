@@ -53,10 +53,13 @@ class MongoConnection:
 
     def get_users(self) -> list:
         """
-        :return: the list of the current users, each of them in the format {user_id, user_name}
+        :return: the list of the current users, each of them in
+        the format {user_id, user_name}
         """
         users_cursor = self.users_col.find({},
-                                           {'user_id': 1, 'user_name': 1, '_id': 0})
+                                           {'user_id': 1,
+                                            'user_name': 1,
+                                            '_id': 0})
         return list(users_cursor)
 
     def get_user(self, user_id: int) -> Optional[dict]:
@@ -71,7 +74,8 @@ class MongoConnection:
         snapshots_cursor = self.snapshots_col.find({'user_id': user_id},
                                                    {'_id': 0, 'timestamp': 1})
         snapshots = [{'id': snapshot['timestamp'],
-                      'date': datetime.datetime.fromtimestamp(snapshot['timestamp']/1000)}
+                      'date': datetime.datetime.fromtimestamp
+                      (snapshot['timestamp'] / 1000)}
                      for snapshot in snapshots_cursor]
         return snapshots
 
@@ -85,20 +89,22 @@ class MongoConnection:
                                                    {'_id': 0})
         return list(snapshots_cursor)
 
-    def get_user_snapshot(self, user_id: int, snapshot_id: int) -> Optional[dict]:
+    def get_user_snapshot(self, user_id: int,
+                          snapshot_id: int) -> Optional[dict]:
         """
         This method returns metadata of a specific snapshot
         :param user_id: the id of the user
         :param snapshot_id: the id of the snapshot (timestamp)
         :return: the user snapshot, in the format {id, date, result: []}
         """
-        snapshot_results = self.snapshots_col.find_one({'user_id': user_id, 'timestamp': snapshot_id},
-                                                       {'_id': 0, 'user_id': 0, 'timestamp': 0})
+        snapshot_results = self.snapshots_col.find_one \
+            ({'user_id': user_id, 'timestamp': snapshot_id},
+             {'_id': 0, 'user_id': 0, 'timestamp': 0})
         if not snapshot_results:
             return
 
         return {
             'id': snapshot_id,
-            'date': datetime.datetime.fromtimestamp(snapshot_id/1000),
+            'date': datetime.datetime.fromtimestamp(snapshot_id / 1000),
             'results': snapshot_results
         }

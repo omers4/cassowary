@@ -1,6 +1,20 @@
 import datetime
 import click
 import requests
+from functools import update_wrapper
+
+
+SERVER_ERROR = 'ERROR: could not fetch data from server. is the DB up?'
+
+
+def wrap_with_conn_error(f):
+    @click.pass_context
+    def wrapper(ctx, *args, **kwargs):
+        try:
+            return ctx.invoke(f, *args, **kwargs)
+        except requests.exceptions.ConnectionError:
+            print('ERROR: Could not connect to API server')
+    return update_wrapper(wrapper, f)
 
 
 @click.group()
@@ -13,6 +27,7 @@ def cli():
               help='API Server hostname / IP')
 @click.option('-p', '--port', default=8000, type=int,
               help='Port to connect API server with')
+@wrap_with_conn_error
 def get_users(host: str, port: int):
     """
     Invoke: $ python -m cassowary.cli get-users
@@ -20,13 +35,16 @@ def get_users(host: str, port: int):
     :param port: Port to connect API server with
     """
     response = requests.get(f'http://{host}:{port}/users')
-    users = response.json()['users']
-    if users:
-        print(f'Users found ({len(users)}):')
-        for user in users:
-            print(f"Name: {user['user_name']} ({user['user_id']})")
-    else:
-        print('No users were found.')
+    if response.status_code == requests.codes.ok:
+        users = response.json()['users']
+        if users:
+            print(f'Users found ({len(users)}):')
+            for user in users:
+                print(f"Name: {user['user_name']} ({user['user_id']})")
+        else:
+            print('No users were found.')
+    elif response.status_code == 500:
+        print(SERVER_ERROR)
 
 
 @cli.command()
@@ -52,6 +70,8 @@ def get_user(host: str, port: int, user_id: int):
         print(f"Gender: {'male' if user['gender'] == 'm' else 'female'}")
     elif response.status_code == requests.codes.not_found:
         print(response.text)
+    elif response.status_code == 500:
+        print(SERVER_ERROR)
 
 
 @cli.command()
@@ -78,6 +98,8 @@ def get_snapshots(host: str, port: int, user_id: int):
             print('No snapshots were found.')
     elif response.status_code == requests.codes.not_found:
         print(response.text)
+    elif response.status_code == 500:
+        print(SERVER_ERROR)
 
 
 @cli.command()
@@ -104,6 +126,8 @@ def get_snapshot(host: str, port: int, user_id: int, snapshot_id: int):
         print(f"Results: {snapshot['results']}")
     elif response.status_code == requests.codes.not_found:
         print(response.text)
+    elif response.status_code == 500:
+        print(SERVER_ERROR)
 
 
 @cli.command()
@@ -138,6 +162,8 @@ def get_result(host: str, port: int, save: str, user_id: int,
             print('Done.')
     elif response.status_code == requests.codes.not_found:
         print(response.text)
+    elif response.status_code == 500:
+        print(SERVER_ERROR)
 
 
 if __name__ == '__main__':

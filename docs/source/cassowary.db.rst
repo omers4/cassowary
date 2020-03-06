@@ -4,6 +4,14 @@ cassowary.db package
 Submodules
 ----------
 
+cassowary.db.exceptions module
+------------------------------
+
+.. automodule:: cassowary.db.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cassowary.db.mongo\_connection module
 -------------------------------------
 

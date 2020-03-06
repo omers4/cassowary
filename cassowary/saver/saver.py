@@ -1,15 +1,15 @@
 import json
-import pika
-
 from cassowary.db.utils import get_database
+from cassowary.mq.message_queues import MessageQueues
 
 
 class Saver:
     """
     Saver represents an object that manages db connection and saves to db
     """
-    def __init__(self, database_url):
+    def __init__(self, database_url, publish_url=''):
         self.database_url = database_url
+        self.publish_url = publish_url
         self.database = get_database(database_url)
 
     def save(self, parser_name, data):
@@ -21,22 +21,15 @@ class Saver:
         with self.database.connect(self.database_url) as connection:
             connection.save(parser_name, data)
 
-    def init_message_queue(self, host, port):
+    def init_message_queue(self):
         print('establish a message queue')
-
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host,
-                                                                       port))
-        self.channel = connection.channel()
-        self.channel.queue_declare(queue='parsed-result')
-        self.channel.basic_consume(queue='parsed-result',
-                                   on_message_callback=self.callback,
-                                   auto_ack=True)
-
+        queue = MessageQueues.get_message_queue(self.publish_url)
+        queue.define_queue('parsed-result')
         print('start listening for parsed results...')
-        self.channel.start_consuming()
+        queue.start_listening_queue('parsed-result', self.callback)
 
-    def callback(self, ch, method, properties, body):
-        parsed_result = json.loads(body)
+    def callback(self, raw_result):
+        parsed_result = json.loads(raw_result)
         print('received parsed data', parsed_result)
 
         parser_name = parsed_result['name']

@@ -1,6 +1,7 @@
 import gzip
 from ..utils.binary_utils import read_message_by_length
-from ..utils.cortex_pb2 import User as ProtobuffUser, Snapshot as ProtobuffSnapshot
+from ..utils.cortex_pb2 import User as ProtobuffUser, \
+    Snapshot as ProtobuffSnapshot
 from ..utils.protocol import Snapshot, User
 from .base_reader import BaseReader
 
@@ -14,7 +15,8 @@ class ProtobuffReader(BaseReader):
         pb_user = ProtobuffUser()
         pb_user.ParseFromString(user_raw)
 
-        user = User(pb_user.user_id, pb_user.username, pb_user.birthday, 'f' if pb_user.gender == 1 else 'm')
+        user = User(pb_user.user_id, pb_user.username, pb_user.birthday,
+                    'f' if pb_user.gender == 1 else 'm')
         return user
 
     def next_snapshot(self):
@@ -30,12 +32,18 @@ class ProtobuffReader(BaseReader):
                             (pb_snapshot.pose.translation.x,
                              pb_snapshot.pose.translation.y,
                              pb_snapshot.pose.translation.z),
-                            (pb_snapshot.pose.rotation.x, pb_snapshot.pose.rotation.y,
-                             pb_snapshot.pose.rotation.z, pb_snapshot.pose.rotation.w),
-                            (pb_snapshot.color_image.width, pb_snapshot.color_image.height,
+                            (pb_snapshot.pose.rotation.x,
+                             pb_snapshot.pose.rotation.y,
+                             pb_snapshot.pose.rotation.z,
+                             pb_snapshot.pose.rotation.w),
+                            (pb_snapshot.color_image.width,
+                             pb_snapshot.color_image.height,
                              pb_snapshot.color_image.data),
-                            (pb_snapshot.depth_image.width, pb_snapshot.depth_image.height,
+                            (pb_snapshot.depth_image.width,
+                             pb_snapshot.depth_image.height,
                              pb_snapshot.depth_image.data),
-                            pb_snapshot.feelings.hunger, pb_snapshot.feelings.thirst,
-                            pb_snapshot.feelings.exhaustion, pb_snapshot.feelings.happiness)
+                            pb_snapshot.feelings.hunger,
+                            pb_snapshot.feelings.thirst,
+                            pb_snapshot.feelings.exhaustion,
+                            pb_snapshot.feelings.happiness)
         return snapshot

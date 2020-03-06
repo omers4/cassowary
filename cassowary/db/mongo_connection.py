@@ -3,6 +3,8 @@ from typing import Optional
 
 from pymongo import MongoClient
 
+from cassowary.db.exceptions import DBConnectionException
+
 
 class MongoConnection:
     def __init__(self, database_url):
@@ -18,7 +20,10 @@ class MongoConnection:
         :param database_url: url to database
         :return: a new mongo connection
         """
-        return MongoConnection(database_url)
+        try:
+            return MongoConnection(database_url)
+        except Exception as e:
+            raise DBConnectionException()
 
     def __enter__(self):
         return self
@@ -97,9 +102,9 @@ class MongoConnection:
         :param snapshot_id: the id of the snapshot (timestamp)
         :return: the user snapshot, in the format {id, date, result: []}
         """
-        snapshot_results = self.snapshots_col.find_one \
-            ({'user_id': user_id, 'timestamp': snapshot_id},
-             {'_id': 0, 'user_id': 0, 'timestamp': 0})
+        snapshot_results = self.snapshots_col.find_one(
+            {'user_id': user_id, 'timestamp': snapshot_id},
+            {'_id': 0, 'user_id': 0, 'timestamp': 0})
         if not snapshot_results:
             return
 

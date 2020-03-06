@@ -11,7 +11,7 @@ def get_database(database_url: str):
     This method returns a database connection based on the scheme of the url.
     I could use aspect oriented, but it's too much overhead at this point,
     since we only have one db practically.
-    One can easily extend this by adding more connections to databases dictionary.
+    One can easily extend this by adding more connections to databases dict.
     :param database_url: the url of the database
     :return: the database connection
     """

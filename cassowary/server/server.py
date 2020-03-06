@@ -1,6 +1,8 @@
 import json
 import struct
+import sys
 import threading
+
 from ..utils.listener import Listener
 from ..utils.connection import Connection
 from ..utils.protocol import Hello, Config, Snapshot
@@ -69,10 +71,14 @@ class Handler(threading.Thread):
 
 
 def run_server(host: str, port: int, publish=print):
-    with Listener(port, host=host) as listener:
-        print(f'Listening on {host}:{port}')
-        while True:
-            connection = listener.accept()
-            print('I got connection. handling...')
-            handler = Handler(connection, publish)
-            handler.start()
+    try:
+        with Listener(port, host=host) as listener:
+            print(f'Listening on {host}:{port}')
+            while True:
+                connection = listener.accept()
+                print('I got connection. handling...')
+                handler = Handler(connection, publish)
+                handler.start()
+    except Exception as error:
+        print(f'ERROR uploading the snapshot: {error}', file=sys.stderr)
+        return 1

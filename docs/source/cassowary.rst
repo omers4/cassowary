@@ -11,6 +11,7 @@ Subpackages
    cassowary.client
    cassowary.db
    cassowary.gui
+   cassowary.mq
    cassowary.parsers
    cassowary.saver
    cassowary.server

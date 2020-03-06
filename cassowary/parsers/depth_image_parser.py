@@ -21,7 +21,8 @@ class DepthImageParser(BaseParser):
             img_data = binary_from_stream(raw_image, f'{width * height}f')
         os.remove(from_path)
 
-        imshow(numpy.reshape(img_data, (width, height)), cmap=matplotlib.cm.RdYlGn)
+        imshow(numpy.reshape(img_data, (width, height)),
+               cmap=matplotlib.cm.RdYlGn)
         matplotlib.pyplot.savefig(to_path)
 
         result = {'name': 'depth_image',

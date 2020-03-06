@@ -4,6 +4,14 @@ cassowary.server package
 Submodules
 ----------
 
+cassowary.server.server module
+------------------------------
+
+.. automodule:: cassowary.server.server
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cassowary.server.utils module
 -----------------------------
 

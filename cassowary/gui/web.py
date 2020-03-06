@@ -1,6 +1,9 @@
 import datetime
 import io
+import sys
 from math import ceil
+
+from ..db.exceptions import DBConnectionException
 from ..db.utils import get_database
 
 from flask import Flask, render_template, send_file
@@ -54,6 +57,13 @@ def register_views(db):
 
 def run_server(host, port, database_url):
     db_cls = get_database(database_url)
-    with db_cls.connect(database_url) as db:
-        register_views(db)
-        app.run(host, port, debug=True)
+    try:
+        with db_cls.connect(database_url) as db:
+            register_views(db)
+            app.run(host, port)
+    except DBConnectionException:
+        print(f'ERROR connecting to db: {database_url}', file=sys.stderr)
+        return 1
+    except Exception as error:
+        print(f'ERROR running the api server: {error}', file=sys.stderr)
+        return 1

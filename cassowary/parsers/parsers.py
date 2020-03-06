@@ -16,7 +16,8 @@ class Parsers:
         """
         files = os.listdir(os.path.dirname(__file__))
         for module_name in files:
-            if module_name.endswith('_parser.py') and not module_name == 'base_parser.py':
+            if module_name.endswith(
+                    '_parser.py') and not module_name == 'base_parser.py':
                 __import__(module_name[:-3], globals(), locals(), [], 1)
 
     @staticmethod

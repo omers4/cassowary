@@ -37,7 +37,8 @@ class Hello:
     @staticmethod
     def deserialize(stream):
         user_id, user_name_length = binary_from_stream(stream, '<QI')
-        user_name = binary_from_stream(stream, f'{user_name_length}s')[0].decode('ASCII')
+        user_name = binary_from_stream(stream, f'{user_name_length}s')[
+            0].decode('ASCII')
         birth, gender = binary_from_stream(stream, '<Ic')
         return Hello(User(user_id, user_name, birth, gender.decode('ASCII')))
 
@@ -71,7 +72,7 @@ class Config:
 
 class Snapshot:
     def __init__(self, timestamp, translation, rotation, image: tuple,
-                                image_depth, hunger, thirst, exhaustion, happiness):
+                 image_depth, hunger, thirst, exhaustion, happiness):
 
         self.timestamp = timestamp
         self.translation = translation
@@ -96,7 +97,8 @@ class Snapshot:
             rotation = (0, 0, 0, 0)
         feelings = self.feelings if 'feelings' in fields else (0, 0, 0, 0)
         w, h, data = self.image if 'color_image' in fields else (0, 0, b'')
-        d_w, d_h, d_data = self.image_depth if 'depth_image' in fields else (0, 0, [])
+        d_w, d_h, d_data = self.image_depth if 'depth_image' in fields else (
+            0, 0, [])
 
         params = [self.timestamp, *translation, *rotation, h, w]
         if data:
@@ -114,16 +116,19 @@ class Snapshot:
 
         pixels = None
         if 'color_image' in fields:
-            pixels = binary_from_stream(stream, f'{3*height*width}s')[0]
+            pixels = binary_from_stream(stream, f'{3 * height * width}s')[0]
         depth_height, depth_width = binary_from_stream(stream, 'II')
 
         depth_pixels = None
         if 'depth_image' in fields:
-            depth_pixels = binary_from_stream(stream, f'{depth_height * depth_width}f')
+            depth_pixels = binary_from_stream(stream,
+                                              f'{depth_height * depth_width}f')
 
-        hunger, thirst, exhaustion, happiness = binary_from_stream(stream, 'ffff')
+        hunger, thirst, exhaustion, happiness = binary_from_stream(stream,
+                                                                   'ffff')
 
-        return Snapshot(timestamp, (translation_x, translation_y, translation_z),
+        return Snapshot(timestamp,
+                        (translation_x, translation_y, translation_z),
                         (rotation_x, rotation_y, rotation_z, rotation_w),
                         (width, height, pixels),
                         (depth_width, depth_height, depth_pixels),

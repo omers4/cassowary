@@ -1,2 +1,2 @@
-from .parsers import run_parser
-__all__ = ['run_parser']
+from .parsers import run_parser, Parsers
+__all__ = ['run_parser', 'Parsers']

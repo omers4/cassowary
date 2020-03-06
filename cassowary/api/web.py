@@ -2,6 +2,7 @@ import io
 import os
 import sys
 
+from ..db.exceptions import DBConnectionException
 from ..db.utils import get_database
 from flask import Flask, send_file
 
@@ -30,7 +31,7 @@ def register_thoughts_views(db):
     def get_user_snapshots(user_id):
         user = db.get_user(user_id)
         if user is None:
-            return '', 404
+            return NO_SUCH_USER, 404
         user_snapshots = db.get_user_snapshots_ids(user_id)
         return {'snapshots': user_snapshots}, 200
 
@@ -97,6 +98,9 @@ def run_api_server(host: str, port: int, database_url: str):
         with db_cls.connect(database_url) as db:
             register_thoughts_views(db)
             app.run(host, port)
+    except DBConnectionException:
+        print(f'ERROR connecting to db: {database_url}', file=sys.stderr)
+        return 1
     except Exception as error:
         print(f'ERROR running the api server: {error}', file=sys.stderr)
         return 1

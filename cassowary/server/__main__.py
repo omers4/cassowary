@@ -1,6 +1,8 @@
+import sys
 import click
-import furl
-import pika
+
+from ..mq.message_queues import MessageQueues
+from ..mq.exceptions import MQConnectionError, NoSuchMQ
 
 from . import run_server
 
@@ -15,18 +17,19 @@ def cli():
 @click.option('-h', '--host', default='0.0.0.0', help='Server hostname / IP')
 @click.option('-p', '--port', default=8000, type=int, help='Server port')
 def run_server_command(publish_url: str, host: str, port: int):
-    formatted_publish_url = furl.furl(publish_url)
 
     def rabbitmq_publish(message):
-        pika_params = pika.ConnectionParameters(formatted_publish_url.host,
-                                                formatted_publish_url.port)
-        connection = pika.BlockingConnection(pika_params)
-        channel = connection.channel()
-        channel.exchange_declare(exchange='raw-snapshot',
-                                 exchange_type='fanout')
-        channel.basic_publish(exchange='raw-snapshot',
-                              routing_key='server',
-                              body=message)
+        MessageQueues.load_mqs()
+        try:
+            queue = MessageQueues.get_message_queue(publish_url)
+        except MQConnectionError as e:
+            print(f'ERROR connecting to the given MQ: {e}', file=sys.stderr)
+            return 1
+        except NoSuchMQ as e:
+            print(f'ERROR connecting to the given MQ: {e}', file=sys.stderr)
+            return 1
+        queue.define_publish_queue('raw-snapshot')
+        queue.publish_to_queue('raw-snapshot', 'server', message)
 
     run_server(host, port, rabbitmq_publish)
 

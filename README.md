@@ -130,7 +130,7 @@ class PoseParser(BaseParser):
 ```
 3. Implement the parser to return your result in `parse` method.
 4. Test your parser, running `python -m cassowary.parsers parse myparser <json data>`
-5. Add your parser to the run-pipelines.sh script in the following format: 
+5. Add your parser to the run-pipelines.sh script in the following format: ```docker run -d -e PARSER=<myparser> -v ParsedResultsVolume:/tmp/parsed_results --net cassowarrynet cassowary:parsers```
 6. You're good to go!
 
 ## The DB & the saver

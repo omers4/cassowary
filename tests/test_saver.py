@@ -27,3 +27,4 @@ def test_save_cli_sanity(mongodb):
     assert result.exit_code == 0
     user = mongodb.users.find_one({'user_id': 1})
     assert user is not None
+    mongodb.users.delete_one({'user_id': 1})

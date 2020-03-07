@@ -38,9 +38,11 @@ $ pytest tests/
 ```
     
 Once the script is done, you can:
-1. go to http://localhost:8080 to see the gui
+1. Upload a snapshot to the server in localhost:8000 (more on that later)
+1. Go to http://localhost:8080 in any browser to see the GUI
 2. Call the http API, running on http://localhost:8888 (more on HTTP API later)
-3. run ```python -m cassowary.cli get-users -p 8888``` to run the cli commands (more on CLI commands later)
+3. Run ```python -m cassowary.cli get-users -p 8888``` to run the cli commands (more on CLI commands later)
+4. Manually saving results to mongodb://localhost:27017
 
 
 ## Usage
@@ -74,7 +76,7 @@ From python:
 >>> from cassowary.client import upload_sample
 >>> upload_sample(host='127.0.0.1', port=8000, path='sample.mind.gz', reader=ProtobuffReader)
 ```
-The client CLI currently reads only protobuffs, but its easy to give another reader when using Python, by just giving a differen reader (like ```BinaryReader```). the reader should inherit ```BaseReader```. 
+The client CLI currently reads only protobuffs, but its easy to give another reader when using Python, by just giving a different reader (like ```BinaryReader```). the reader should inherit ```BaseReader```. 
 
 ## The server
 The server listents to connections from clients, in order to receive snapshots and pass them to the queue.
